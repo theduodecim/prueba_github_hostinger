@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sitio de prueba con navbar</title>
+<style>
+  :root {
+    --bg: #eef2ef;
+    --surface: #ffffff;
+    --ink: #14231f;
+    --muted: #55655f;
+    --accent: #0f6b5c;
+    --accent-ink: #ffffff;
+    --warm: #f2b134;
+    --border: #d3ddd8;
+    --nav-h: 64px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1815;
+      --surface: #16241f;
+      --ink: #e9f1ed;
+      --muted: #96aaa2;
+      --accent: #4fc4ab;
+      --accent-ink: #08201a;
+      --warm: #f2b134;
+      --border: #26392f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; line-height: 1.15; margin: 0; }
+  a { color: inherit; }
+
+  /* ---------- Navbar ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: var(--nav-h);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1000px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-decoration: none;
+  }
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px 8px 8px 2px;
+    background: var(--accent);
+    position: relative;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warm);
+  }
+  .links { display: flex; align-items: center; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  .links a {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: .95rem;
+    transition: background .15s, color .15s;
+  }
+  .links a:hover { color: var(--ink); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .links a.active { color: var(--accent-ink); background: var(--accent); }
+  .burger {
+    display: none;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .burger svg { width: 20px; height: 20px; }
+
+  @media (max-width: 720px) {
+    .burger { display: inline-flex; }
+    .links {
+      position: absolute;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 10px 20px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: none;
+    }
+    .links.open { display: flex; }
+    .links a { border-radius: 10px; padding: 12px 14px; }
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 72px 0; }
+
+  .hero { padding: 88px 0 72px; }
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); max-width: 14ch; }
+  .hero p { max-width: 52ch; color: var(--muted); font-size: 1.1rem; margin: 20px 0 28px; }
+  .btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    text-decoration: none;
+    font-weight: 600;
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); margin-left: 8px; }
+  .btn:focus-visible, .links a:focus-visible, .burger:focus-visible, .brand:focus-visible {
+    outline: 3px solid var(--warm);
+    outline-offset: 2px;
+  }
+
+  h2 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); margin-bottom: 28px; }
+
+  .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .service { padding: 4px 0 4px 18px; border-left: 3px solid var(--accent); }
+  .service:nth-child(2) { border-left-color: var(--warm); }
+  .service h3 { font-size: 1.2rem; margin-bottom: 6px; }
+  .service p { margin: 0; color: var(--muted); }
+
+  .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .project {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .thumb { height: 120px; background: var(--accent); }
+  .project:nth-child(2) .thumb { background: var(--warm); }
+  .project:nth-child(3) .thumb { background: color-mix(in srgb, var(--accent) 45%, var(--warm)); }
+  .project div.body { padding: 18px 20px 22px; }
+  .project h3 { font-size: 1.15rem; margin-bottom: 6px; }
+  .project p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .contact-card p { margin: 6px 0 0; color: var(--muted); }
+
+  footer { padding: 28px 0 40px; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--border); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#inicio"><span class="brand-mark" aria-hidden="true"></span>Tu Marca</a>
+
+    <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+    </button>
+
+    <ul class="links" id="menu">
+      <li><a href="#inicio" class="active">Inicio</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section id="inicio" class="hero">
+    <div class="wrap">
+      <h1>Ideas que se vuelven sitios que andan</h1>
+      <p>Esta es una página de prueba para tu Google Site. Cambiá los textos, los colores y las secciones por lo que necesites.</p>
+      <a class="btn" href="#contacto">Escribime</a>
+      <a class="btn ghost" href="#proyectos">Ver proyectos</a>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="wrap">
+      <h2>Qué hacemos</h2>
+      <div class="services">
+        <div class="service">
+          <h3>Diseño web</h3>
+          <p>Sitios claros, rápidos y que se ven bien en el celular.</p>
+        </div>
+        <div class="service">
+          <h3>Automatización</h3>
+          <p>Flujos que ahorran tareas repetitivas y conectan tus herramientas.</p>
+        </div>
+        <div class="service">
+          <h3>Capacitación</h3>
+          <p>Clases a medida para aprender haciendo, a tu ritmo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyectos">
+    <div class="wrap">
+      <h2>Proyectos</h2>
+      <div class="projects">
+        <article class="project">
+          <div class="thumb"></div>
+          <div class="body"><h3>Proyecto uno</h3><p>Descripción corta de lo que se hizo y para quién.</p></div>
+        </article>
+        <article class="project">
+          <div class="thumb"></div>
+          <div class="body"><h3>Proyecto dos</h3><p>Descripción corta de lo que se hizo y para quién.</p></div>
+        </article>
+        <article class="project">
+          <div class="thumb"></div>
+          <div class="body"><h3>Proyecto tres</h3><p>Descripción corta de lo que se hizo y para quién.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="wrap">
+      <div class="contact-card">
+        <div>
+          <h2 style="margin-bottom:0">Hablemos</h2>
+          <p>Contanos qué necesitás y te respondemos en el día.</p>
+        </div>
+        <a class="btn" href="mailto:hola@ejemplo.com">Enviar un mail</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Tu Marca. Página de prueba.</div>
+</footer>
+
+<script>
+  var burger = document.getElementById('burger');
+  var menu = document.getElementById('menu');
+  var links = menu.querySelectorAll('a');
+
+  function setMenu(open) {
+    menu.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+  }
+
+  burger.addEventListener('click', function () {
+    setMenu(!menu.classList.contains('open'));
+  });
+
+  links.forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
+  });
+
+  // Resalta el link de la sección visible
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+  function marcarActivo() {
+    var y = window.scrollY + 120;
+    var actual = sections[0].id;
+    sections.forEach(function (s) { if (s.offsetTop <= y) actual = s.id; });
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
+      actual = sections[sections.length - 1].id;
+    }
+    links.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + actual);
+    });
+  }
+  window.addEventListener('scroll', marcarActivo, { passive: true });
+  marcarActivo();
+</script>
+</body>
+</html>
